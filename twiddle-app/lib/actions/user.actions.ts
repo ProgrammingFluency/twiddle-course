@@ -33,3 +33,15 @@ export const createUser = async ({
     }
 
 }
+
+export const fetchUser = async (userId: string) => {
+    try {
+        connectToDB()
+
+        return await User.findOne({
+            id: userId
+        })
+    } catch(err: any) {
+        throw new Error(`Failed to fetch user: ${err.message}`)
+    }
+}
