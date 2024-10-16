@@ -1,14 +1,15 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: [
+    darkMode: ["class"],
+    content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-      colors: {
+  	extend: {
+  		colors: {
   			'primary-500': '#877EFF',
   			'secondary-500': '#FFB620',
   			blue: '#0095F6',
@@ -25,96 +26,28 @@ const config: Config = {
   			'gray-1': '#697C89',
   			glassmorphism: 'rgba(16, 16, 18, 0.60)'
   		},
-      screens: {
+  		screens: {
   			xs: '400px'
   		},
   		fontSize: {
-			'subtle-medium': [
-				"12px",
-				{
-					lineHeight: "16px",
-					fontWeight: "500",
-				},
-			],
-			'base-regular': [
-				"16px",
-				{
-					lineHeight: "140%",
-					fontWeight: "400",
-				},
-			],
-			'heading2-bold': [
-				"30px",
-				{
-					lineHeight: "140%",
-					fontWeight: "700",
-				},
-			],
-			'heading4-medium': [
-				"20px",
-				{
-					lineHeight: "140%",
-					fontWeight: "500",
-				},
-			],
-			'base-semibold': [
-				"16px",
-				{
-					lineHeight: "140%",
-					fontWeight: "600",
-				},
-			],
-			'small-medium': [
-				"14px",
-				{
-					lineHeight: "140%",
-					fontWeight: "500",
-				},
-			],
-
-			"small-regular": [
-				"14px",
-				{
-				  lineHeight: "140%",
-				  fontWeight: "400",
-				},
-			  ],
-			  "tiny-medium": [
-				"10px",
-				{
-				  lineHeight: "140%",
-				  fontWeight: "500",
-				},
-			  ],
-			  "small-semibold": [
-				"14px",
-				{
-				  lineHeight: "140%",
-				  fontWeight: "600",
-				},
-			  ],
-			  "heading3-bold": [
-				"24px",
-				{
-				  lineHeight: "140%",
-				  fontWeight: "700",
-				},
-			  ],
-		"base-medium": [
-          "16px",
-          {
-            lineHeight: "140%",
-            fontWeight: "500",
-          },
-        ],
-		},
-		
+  			'subtle-medium': [				"12px",				{					lineHeight: "16px",					fontWeight: "500",				},			],
+  			'base-regular': [				"16px",				{					lineHeight: "140%",					fontWeight: "400",				},			],
+  			'heading2-bold': [				"30px",				{					lineHeight: "140%",					fontWeight: "700",				},			],
+  			'heading4-medium': [				"20px",				{					lineHeight: "140%",					fontWeight: "500",				},			],
+  			'base-semibold': [				"16px",				{					lineHeight: "140%",					fontWeight: "600",				},			],
+  			'small-medium': [				"14px",				{					lineHeight: "140%",					fontWeight: "500",				},			],
+  			'small-regular': [				"14px",				{				  lineHeight: "140%",				  fontWeight: "400",				},			  ],
+  			'tiny-medium': [				"10px",				{				  lineHeight: "140%",				  fontWeight: "500",				},			  ],
+  			'small-semibold': [				"14px",				{				  lineHeight: "140%",				  fontWeight: "600",				},			  ],
+  			'heading3-bold': [				"24px",				{				  lineHeight: "140%",				  fontWeight: "700",				},			  ],
+  			'base-medium': [          "16px",          {            lineHeight: "140%",            fontWeight: "500",          },        ]
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		}
-    },
+  	}
   },
   plugins: [require('tailwindcss-animate')],
 };
