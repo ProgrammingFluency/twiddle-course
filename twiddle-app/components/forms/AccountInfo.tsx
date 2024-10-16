@@ -15,6 +15,9 @@ import { Textarea } from "@/components/ui/textarea";
 import * as z from 'zod'
 import { UserValidation } from "@/lib/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { updateUser } from "@/lib/actions/user.actions";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Props {
     user: {
@@ -24,13 +27,45 @@ interface Props {
 }
 
 const AccountInfo = ( { user }: Props )  => {
+    const pathname = usePathname()
+    const router = useRouter()
+    const [ showBio, setShowBio ] = useState(false)
+
+    useEffect(() => {
+        setTimeout(() => {
+            setShowBio(true)
+        }, 1000)
+    })
+    
+
     const form = useForm< z.infer< typeof UserValidation> >({
         resolver: zodResolver(UserValidation),
         defaultValues: {
             bio: user?.bio ? user?.bio : ''
         }
     })
-    const onSubmit = () => {}
+    const onSubmit = async (values: z.infer< typeof UserValidation> ) => {
+
+        await updateUser({
+            userId: user.id,
+            bio: values.bio,
+            path: pathname
+        })
+
+        if(pathname === '/profile/edit') {
+            router.back()
+        } else {
+            router.push('/')
+        }
+
+    }
+
+    if(!showBio) {
+        return (
+            <h1 className="text-heading1-bold text-light-1">Loading...</h1>
+        )
+    }
+
     return (
         <>
             <section className="mt-9 bg-dark-2 p-10">

@@ -1,3 +1,4 @@
+import AccountInfo from "@/components/forms/AccountInfo"
 import { fetchUser } from "@/lib/actions/user.actions"
 import { UserProfile } from "@clerk/nextjs"
 import { currentUser } from "@clerk/nextjs/server"
