@@ -2,7 +2,7 @@
     import { Webhook } from 'svix'
     import { headers } from 'next/headers'
     import { WebhookEvent } from '@clerk/nextjs/server'
-    import { createUser} from '@/lib/actions/user.actions'
+    import { createUser, updateUser} from '@/lib/actions/user.actions'
 
     export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -60,8 +60,17 @@
             username: user.username || '',
             image: user.image_url || '',
           });
-    
     }  
+    if( evt.type === 'user.updated' ) {
+        const user = evt.data
+        await updateUser({
+            userId: user.id,
+            email: user.email_addresses[0].email_address,
+            name: `${user.first_name || ''}${user.last_name || ''}`,
+            username: user.username || '',
+            image: user.image_url || '',
+        })
+    }
 
     return new Response('', { status: 200 })
     }
