@@ -50,3 +50,45 @@ export const createGroup = async (
       throw error;
     }
   }
+
+  export const addMemberToGroup = async (
+    groupId: string,
+    memberId: string
+  ) => {
+    try {
+      connectToDB();
+  
+      // Find the group by its unique id
+      const group = await Group.findOne({ id: groupId });
+  
+      if (!group) {
+        throw new Error("Group not found");
+      }
+  
+      // Find the user by their unique id
+      const user = await User.findOne({ id: memberId });
+  
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      // Check if the user is already a member of the group
+      if (group.members.includes(user._id)) {
+        throw new Error("User is already a member of the group");
+      }
+  
+      // Add the user's _id to the members array in the group
+      group.members.push(user._id);
+      await group.save();
+  
+      // Add the group's _id to the groups array in the user
+      user.groups.push(group._id);
+      await user.save();
+  
+      return group;
+    } catch (error) {
+      // Handle any errors
+      console.error("Error adding member to group:", error);
+      throw error;
+    }
+  }
