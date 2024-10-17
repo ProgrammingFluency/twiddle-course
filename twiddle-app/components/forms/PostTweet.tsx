@@ -15,12 +15,18 @@ import {
  import { Button } from '@/components/ui/button'
 import { Textarea } from "@/components/ui/textarea";
 import { TweetValidation } from "@/lib/validations/tweet";
+import { usePathname, useRouter } from "next/navigation";
+import { createTweet } from "@/lib/actions/tweet.actions";
 
 interface Props {
     userId: string
 }
 
 const PostTweet = ( { userId }: Props ) => {
+    const pathname = usePathname()
+    const router = useRouter()
+
+
     const form = useForm< z.infer< typeof TweetValidation> >({
         resolver: zodResolver(TweetValidation),
         defaultValues: {
@@ -29,7 +35,14 @@ const PostTweet = ( { userId }: Props ) => {
         }
     })
 
-    const onSubmit = () => {
+    const onSubmit = async ( values: z.infer< typeof TweetValidation> ) => {
+        await createTweet({
+            text: values.tweet,
+            author: userId,
+            path: pathname
+        })
+
+        router.push('/')
 
     }
     return (
