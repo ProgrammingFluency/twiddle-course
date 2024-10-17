@@ -54,10 +54,10 @@ export default async function RootLayout({ children }:
                         <main className={ `${inter.className}` }>
                             <TopBar />
                             
-                            <main className='flex flex-row'>
+                            <main className='flex'>
                                 <LeftSideBar />
                                 <section className='main-container'>
-                                    <div className='w-full flex justify-center items-center min-h-screen'>
+                                    <div className='w-full max-w-4xl'>
                                     { children }
                                     </div>
                                 </section>

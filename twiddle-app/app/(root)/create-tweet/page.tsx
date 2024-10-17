@@ -1,3 +1,4 @@
+import PostTweet from "@/components/forms/PostTweet"
 import { fetchUser } from "@/lib/actions/user.actions"
 import { currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
