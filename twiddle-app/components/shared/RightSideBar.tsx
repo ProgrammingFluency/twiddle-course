@@ -1,5 +1,6 @@
 import { fetchUsers } from "@/lib/actions/user.actions"
 import { currentUser } from "@clerk/nextjs/server"
+import UserCard from "../cards/UserCard"
 
 const RightSideBar = async () => {
     const user = await currentUser()
@@ -40,7 +41,6 @@ const RightSideBar = async () => {
                                             name = { person.name }
                                             username = { person.name }
                                             imgUrl = { person.image }
-                                            personType = 'User'
                                         />
                                     } ) }
                                 </>
