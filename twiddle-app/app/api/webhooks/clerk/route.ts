@@ -1,8 +1,9 @@
-    // @ts-ignore
+        // @ts-ignore
     import { Webhook } from 'svix'
     import { headers } from 'next/headers'
     import { WebhookEvent } from '@clerk/nextjs/server'
     import { createUser, updateUser} from '@/lib/actions/user.actions'
+import { createGroup } from '@/lib/actions/group.actions'
 
     export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -69,6 +70,17 @@
             name: `${user.first_name || ''}${user.last_name || ''}`,
             username: user.username || '',
             image: user.image_url || '',
+        })
+    }
+
+    if( evt.type === 'organization.created' ) {
+        const { id, name, slug, image_url, created_by } = evt.data
+        await createGroup ({
+            id,
+            name,
+            username: slug,
+            image: image_url || '',
+            createdById: created_by
         })
     }
 
