@@ -34,7 +34,7 @@ const Page = async () => {
                         appearance={{
                             baseTheme: dark,
                         }}
-                        routing="hash"
+                        //routing="hash"
                     />
                 </div>
 
