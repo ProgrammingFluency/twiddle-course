@@ -34,7 +34,7 @@ const RightSideBar = async () => {
                         {
                             similarMinds.users.length > 0 ? (
                                 <>
-                                    { similarMinds.users.map( ( person ) => {
+                                    { similarMinds.users.map( ( person ) => 
                                         <UserCard
                                             key = { person.id }
                                             id = { person.id }
@@ -42,7 +42,7 @@ const RightSideBar = async () => {
                                             username = { person.name }
                                             imgUrl = { person.image }
                                         />
-                                    } ) }
+                                    ) }
                                 </>
                             ) : (
                                 <>
