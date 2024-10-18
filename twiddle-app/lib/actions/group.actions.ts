@@ -92,3 +92,45 @@ export const createGroup = async (
       throw error;
     }
   }
+
+
+  export const removeUserFromGroup = async (
+    userId: string,
+    groupId: string
+  ) => {
+    try {
+      connectToDB();
+  
+      const userIdObject = await User.findOne({ id: userId }, { _id: 1 });
+      const groupIdObject = await Group.findOne(
+        { id: groupId },
+        { _id: 1 }
+      );
+  
+      if (!userIdObject) {
+        throw new Error("User not found");
+      }
+  
+      if (!groupIdObject) {
+        throw new Error("Group not found");
+      }
+  
+      // Remove the user's _id from the members array in the group
+      await Group.updateOne(
+        { _id: groupIdObject._id },
+        { $pull: { members: userIdObject._id } }
+      );
+  
+      // Remove the group's _id from the groups array in the user
+      await User.updateOne(
+        { _id: userIdObject._id },
+        { $pull: { groups: groupIdObject._id } }
+      );
+  
+      return { success: true };
+    } catch (error) {
+      // Handle any errors
+      console.error("Error removing user from group:", error);
+      throw error;
+    }
+  }

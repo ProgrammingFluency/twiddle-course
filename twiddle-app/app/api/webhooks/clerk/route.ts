@@ -3,7 +3,7 @@
     import { headers } from 'next/headers'
     import { WebhookEvent } from '@clerk/nextjs/server'
     import { createUser, updateUser} from '@/lib/actions/user.actions'
-import { addMemberToGroup, createGroup } from '@/lib/actions/group.actions'
+import { addMemberToGroup, createGroup, removeUserFromGroup } from '@/lib/actions/group.actions'
 
     export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -87,6 +87,11 @@ import { addMemberToGroup, createGroup } from '@/lib/actions/group.actions'
     if( evt.type === 'organizationMembership.created' ) {
         const { organization, public_user_data } = evt.data
         await addMemberToGroup(organization.id, public_user_data.user_id)
+    }
+
+    if( evt.type === 'organizationMembership.deleted' ) {
+        const { organization, public_user_data } = evt.data
+        await removeUserFromGroup( public_user_data.user_id, organization.id )
     }
 
     return new Response('', { status: 200 })
