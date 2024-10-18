@@ -1,6 +1,7 @@
 'use server'
 
 import Group from "../models/group.model";
+import Tweet from "../models/tweet.model";
 import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 
@@ -158,6 +159,40 @@ export const createGroup = async (
     } catch (error) {
       // Handle any errors
       console.error("Error updating group information:", error);
+      throw error;
+    }
+  }
+
+  export const deleteGroup = async (groupId: string) => {
+    try {
+      connectToDB();
+  
+      // Find the group by its ID and delete it
+      const deletedGroup = await Group.findOneAndDelete({
+        id: groupId,
+      });
+  
+      if (!deletedGroup) {
+        throw new Error("Group not found");
+      }
+  
+      // Delete all tweets associated with the group
+      await Tweet.deleteMany({ group: groupId });
+  
+      // Find all users who are part of the group
+      const groupUsers = await User.find({ groups: groupId });
+  
+      // Remove the group from the 'groups' array for each user
+      const updateUserPromises = groupUsers.map((user) => {
+        user.groups.pull(groupId);
+        return user.save();
+      });
+  
+      await Promise.all(updateUserPromises);
+  
+      return deletedGroup;
+    } catch (error) {
+      console.error("Error deleting group: ", error);
       throw error;
     }
   }
