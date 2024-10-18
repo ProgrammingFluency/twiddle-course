@@ -3,7 +3,7 @@
     import { headers } from 'next/headers'
     import { WebhookEvent } from '@clerk/nextjs/server'
     import { createUser, updateUser} from '@/lib/actions/user.actions'
-import { addMemberToGroup, createGroup, removeUserFromGroup } from '@/lib/actions/group.actions'
+import { addMemberToGroup, createGroup, removeUserFromGroup, updateGroupInfo } from '@/lib/actions/group.actions'
 
     export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -57,7 +57,7 @@ import { addMemberToGroup, createGroup, removeUserFromGroup } from '@/lib/action
         await createUser({
             userId: user.id,
             email: user.email_addresses[0].email_address,
-            name: `${user.first_name || ''}${user.last_name || ''}`,
+            name: `${user.first_name || ''} ${user.last_name || ''}`,
             username: user.username || '',
             image: user.image_url || '',
           });
@@ -67,7 +67,7 @@ import { addMemberToGroup, createGroup, removeUserFromGroup } from '@/lib/action
         await updateUser({
             userId: user.id,
             email: user.email_addresses[0].email_address,
-            name: `${user.first_name || ''}${user.last_name || ''}`,
+            name: `${user.first_name || ''} ${user.last_name || ''}`,
             username: user.username || '',
             image: user.image_url || '',
         })
@@ -92,6 +92,11 @@ import { addMemberToGroup, createGroup, removeUserFromGroup } from '@/lib/action
     if( evt.type === 'organizationMembership.deleted' ) {
         const { organization, public_user_data } = evt.data
         await removeUserFromGroup( public_user_data.user_id, organization.id )
+    }
+
+    if( evt.type === 'organization.updated' ) {
+        const { id, image_url, name, slug } = evt.data
+        await updateGroupInfo( id, name, slug, ( image_url || '' ) )
     }
 
     return new Response('', { status: 200 })
