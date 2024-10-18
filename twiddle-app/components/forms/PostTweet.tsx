@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { TweetValidation } from "@/lib/validations/tweet";
 import { usePathname, useRouter } from "next/navigation";
 import { createTweet } from "@/lib/actions/tweet.actions";
+import { useOrganization } from "@clerk/nextjs";
 
 interface Props {
     userId: string
@@ -25,6 +26,7 @@ interface Props {
 const PostTweet = ( { userId }: Props ) => {
     const pathname = usePathname()
     const router = useRouter()
+    const { organization } = useOrganization()
 
 
     const form = useForm< z.infer< typeof TweetValidation> >({
@@ -39,7 +41,8 @@ const PostTweet = ( { userId }: Props ) => {
         await createTweet({
             text: values.tweet,
             author: userId,
-            path: pathname
+            path: pathname,
+            groupId: organization ? organization.id : null
         })
 
         router.push('/')
