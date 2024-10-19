@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import User from "../models/user.model"
 import { connectToDB } from "../mongoose"
 import { FilterQuery, SortOrder } from "mongoose";
+import Tweet from "../models/tweet.model";
 
 interface CreateUserParams {
     userId: String;
@@ -136,3 +137,54 @@ export const fetchUsers = async ({
         throw new Error(`Failed to fetch users: ${err.message}`)
     }
 }
+
+
+export async function likeOrDislikeTweet(userId: string, tweetId: string, path: string) {
+    try {
+      connectToDB();
+  
+  
+      // Find the user and check if they have already liked the tweet
+      const user = await User.findOne({ id: userId });
+      if (!user) throw new Error("User not found");
+  
+      let tweet;
+  
+      if (user.likedTweets.includes(tweetId)) {
+        // If the tweet is already liked, decrement its likes and remove it from the user's likedTweets
+        tweet = await Tweet.findByIdAndUpdate(
+          tweetId,
+          { $inc: { likes: -1 } },
+          { new: true } // Return the updated document
+        );
+  
+        if (!tweet) {
+          throw new Error("Tweet not found");
+        }
+  
+        // Remove the tweet from the user's likedTweets array
+        user.likedTweets = user.likedTweets.filter((id: any) => id.toString() !== tweetId);
+      } else {
+        // If the tweet is not liked, increment its likes and add it to the user's likedTweets
+        tweet = await Tweet.findByIdAndUpdate(
+          tweetId,
+          { $inc: { likes: 1 } },
+          { new: true } // Return the updated document
+        );
+  
+  
+        if (!tweet) {
+          throw new Error("Tweet not found");
+        }
+  
+        // Add the tweet to the user's likedTweets array
+        user.likedTweets.push(tweetId);
+      }
+  
+      await user.save();
+      revalidatePath(path)
+  
+    } catch (error: any) {
+      throw new Error(`Failed to like or dislike tweet: ${error.message}`);
+    }
+  }
