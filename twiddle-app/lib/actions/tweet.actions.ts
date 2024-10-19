@@ -99,3 +99,48 @@ export const fetchTweets = async (pageNumber = 1, pageSize = 20) => {
   
     return { posts, isNext };
   };
+
+  interface RetweetParams {
+    userId: string;
+    tweetId: string;
+    path: string,
+    groupId: string | null;
+  }
+
+  export const retweetTweet = async ({
+    userId, 
+    tweetId,
+    path,
+    groupId,
+  }: RetweetParams) => {
+    try {
+      connectToDB();
+      const user = await User.findById(userId);
+      if (!user) throw new Error('User not found:');
+  
+      
+  
+      const originalTweet = await Tweet.findById(tweetId);
+      if (!originalTweet) throw new Error('Original tweet not found');
+  
+      if (user.retweets.includes(tweetId)) {
+        throw new Error('You have already retweeted this tweet');
+      }
+  
+      await createTweet({
+        text: originalTweet.text,
+        retweetOf: tweetId,
+        author: userId,
+        path,
+        groupId
+      })
+  
+      user.retweets.push(tweetId)
+      await user.save();
+  
+      revalidatePath(path)
+  
+    } catch (error: any) {
+      throw new Error(`Failed to retweet: ${error.message}`);
+    }
+  }

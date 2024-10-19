@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import TweetLikeButton from "../shared/TweetLikeButton";
+import RetweetButton from "../shared/RetweetButton";
 
 interface Props {
     id: string;
