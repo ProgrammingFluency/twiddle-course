@@ -1,5 +1,6 @@
 import TweetCard from '@/components/cards/TweetCard';
 import LandingPage from '@/components/shared/LandingPage'
+import Pagination from '@/components/shared/Pagination';
 import { fetchTweets, isTweetByUser } from '@/lib/actions/tweet.actions';
 import { fetchUser } from '@/lib/actions/user.actions'
 import { currentUser } from '@clerk/nextjs/server'
@@ -61,6 +62,12 @@ export default async function Home({
           </div> 
         )}
       </section>
+
+      <Pagination
+        path='/'
+        pageNumber={searchParams?.page ? +searchParams.page : 1}
+        isNext={result.isNext}
+      />
     </>
   )
 }
