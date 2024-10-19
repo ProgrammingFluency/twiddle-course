@@ -67,7 +67,7 @@ const RightSideBar = async () => {
                                             key = { person.id }
                                             id = { person.id }
                                             name = { person.name }
-                                            username = { person.usernam }
+                                            username = { person.username }
                                             imgUrl = { person.image }
                                         />
                                     ) }
