@@ -54,3 +54,48 @@ export const createTweet = async ({
         throw new Error(`Failed to create tweet ${err.message}`)
     }
 }
+
+export const fetchTweets = async (pageNumber = 1, pageSize = 20) => {
+    connectToDB();
+  
+    const skipAmount = (pageNumber - 1) * pageSize;
+  
+    const TweetsQuery = Tweet.find({ parentId: { $in: [null, undefined] } })
+      .sort({ createdAt: 'desc' })
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({
+        path: 'author',
+        model: User,
+      })
+      .populate({
+        path: 'group',
+        model: Group,
+      })
+      .populate({
+        path: 'children',
+        populate: {
+          path: 'author',
+          model: User,
+          select: '_id name parentId image',
+        },
+      })
+      .populate({
+        path: 'retweetOf', // Populate the retweetOf field
+        populate: {
+          path: 'author',
+          model: User,
+          select: '_id name image',
+        },
+      });
+  
+    const totalPostsCount = await Tweet.countDocuments({
+      parentId: { $in: [null, undefined] },
+    });
+  
+    const posts = await TweetsQuery.exec();
+  
+    const isNext = totalPostsCount > skipAmount + posts.length;
+  
+    return { posts, isNext };
+  };
