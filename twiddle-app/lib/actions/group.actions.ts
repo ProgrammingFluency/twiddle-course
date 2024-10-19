@@ -1,5 +1,6 @@
 'use server'
 
+import { FilterQuery, SortOrder } from "mongoose";
 import Group from "../models/group.model";
 import Tweet from "../models/tweet.model";
 import User from "../models/user.model";
@@ -193,6 +194,62 @@ export const createGroup = async (
       return deletedGroup;
     } catch (error) {
       console.error("Error deleting group: ", error);
+      throw error;
+    }
+  }
+
+  export const fetchGroups = async ({
+    searchString = "",
+    pageNumber = 1,
+    pageSize = 20,
+    sortBy = "desc",
+  }: {
+    searchString?: string;
+    pageNumber?: number;
+    pageSize?: number;
+    sortBy?: SortOrder;
+  }) => {
+    try {
+      connectToDB();
+  
+      // Calculate the number of groups to skip based on the page number and page size.
+      const skipAmount = (pageNumber - 1) * pageSize;
+  
+      // Create a case-insensitive regular expression for the provided search string.
+      const regex = new RegExp(searchString, "i");
+  
+      // Create an initial query object to filter groups.
+      const query: FilterQuery<typeof Group> = {};
+  
+      // If the search string is not empty, add the $or operator to match either username or name fields.
+      if (searchString.trim() !== "") {
+        query.$or = [
+          { username: { $regex: regex } },
+          { name: { $regex: regex } },
+        ];
+      }
+  
+      // Define the sort options for the fetched groups based on createdAt field and provided sort order.
+      const sortOptions = { createdAt: sortBy };
+  
+      // Create a query to fetch the groups based on the search and sort criteria.
+      const groupsQuery = Group.find(query)
+        .sort(sortOptions)
+        .skip(skipAmount)
+        .limit(pageSize)
+        .populate("members");
+  
+      // Count the total number of groups that match the search criteria (without pagination).
+      const totalGroupsCount = await Group.countDocuments(query);
+  
+      const groups = await groupsQuery.exec();
+  
+      // Check if there are more groups beyond the current page.
+      const isNext = totalGroupsCount > skipAmount + groups.length;
+  
+      return { groups, isNext };
+    } catch (error) {
+      console.error("Error fetching groups:", error);
       throw error;
     }
   }
