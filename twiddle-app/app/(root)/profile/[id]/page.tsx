@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { profileTabs } from "@/constants";
 import Image from "next/image";
 import TweetsTab from "@/components/shared/TweetsTab";
+import RepliesTab from "@/components/shared/RepliesTab";
 
 
 const Page = async ( {params}: {params: {id: string}} ) => {

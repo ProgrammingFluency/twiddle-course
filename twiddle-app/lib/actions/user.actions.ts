@@ -233,3 +233,35 @@ export async function likeOrDislikeTweet(userId: string, tweetId: string, path: 
       throw error;
     }
   }
+
+  export const fetchUserReplies = async (userId: string) => {
+    try {
+      connectToDB();
+  
+      // Find all replies authored by the user with the given userId
+      const replies = await User.findOne({ id: userId }).populate({
+        path: "replies",
+        model: Tweet,
+        populate: [
+          {
+            path: "group",
+            model: Group,
+            select: "name id image _id", // Select the "name", "id", "image", and "_id" fields from the "Group" model
+          },
+          {
+            path: "children",
+            model: Tweet,
+            populate: {
+              path: "author",
+              model: User,
+              select: "name image id", // Select the "name", "image", and "id" fields from the "User" model
+            },
+          },
+        ],
+      });
+      return replies
+    } catch (error: any) {
+      console.error("Error fetching user replies:", error);
+      throw error;
+    }
+  }
