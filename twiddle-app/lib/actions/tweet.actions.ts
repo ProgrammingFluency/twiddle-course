@@ -254,3 +254,52 @@ export const fetchTweets = async (pageNumber = 1, pageSize = 20) => {
     }
   
   };
+
+  export const fetchTweetById = async (id: string) => {
+    connectToDB();
+  
+    try {
+      const tweet = await Tweet.findById(id)
+        .populate({
+          path: 'author',
+          model: User,
+          select: '_id id name image',
+        })
+        .populate({
+          path: 'children',
+          populate: [
+            {
+              path: 'author',
+              model: User,
+              select: '_id id name image',
+            },
+            {
+              path: 'children',
+              model: Tweet,
+              populate: {
+                path: 'author',
+                model: User,
+                select: '_id id name image',
+              },
+            },
+          ],
+        })
+        .populate({
+          path: 'retweetOf', // Populate the retweetOf field
+          populate: {
+            path: 'author',
+            model: User,
+            select: '_id id name image',
+          },
+        })
+        .populate({
+          path: 'group',
+          model: Group,
+        })
+        .exec();
+  
+      return tweet;
+    } catch (err: any) {
+      throw new Error(`Error fetching tweet: ${err.message}`);
+    }
+  };
