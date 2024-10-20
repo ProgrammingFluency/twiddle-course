@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import { addCommentToTweet } from "@/lib/actions/tweet.actions";
 
 
 interface Props {

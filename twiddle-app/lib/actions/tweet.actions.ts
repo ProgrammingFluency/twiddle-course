@@ -303,3 +303,36 @@ export const fetchTweets = async (pageNumber = 1, pageSize = 20) => {
       throw new Error(`Error fetching tweet: ${err.message}`);
     }
   };
+
+
+  export const addCommentToTweet = async (
+    tweetId: string,
+    commentText: string,
+    userId: string,
+    path: string
+  ) => {
+    connectToDB();
+    try {
+      const originalTweet = await Tweet.findById(tweetId);
+      if (!originalTweet) throw new Error('Tweet Not Found!!!');
+  
+      const commentTweet = new Tweet({
+        text: commentText,
+        author: userId,
+        parentId: tweetId,
+      });
+  
+      const savedCommentTweet = await commentTweet.save();
+  
+      // Update user's replies
+      await User.findByIdAndUpdate(userId, {
+        $push: { replies: savedCommentTweet._id },
+      });
+  
+      originalTweet.children.push(savedCommentTweet._id);
+      await originalTweet.save();
+      revalidatePath(path);
+    } catch (err: any) {
+      throw new Error(`Error adding comment to tweet: ${err.message}`);
+    }
+  };
