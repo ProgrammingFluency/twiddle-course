@@ -5,6 +5,7 @@ import { redirect } from "next/navigation"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { profileTabs } from "@/constants";
 import Image from "next/image";
+import TweetsTab from "@/components/shared/TweetsTab";
 
 
 const Page = async ( {params}: {params: {id: string}} ) => {
