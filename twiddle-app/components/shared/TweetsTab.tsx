@@ -1,4 +1,5 @@
-import { fetchUser } from "@/lib/actions/user.actions"
+import { fetchGroupPosts } from "@/lib/actions/group.actions";
+import { fetchUser, fetchUserPosts } from "@/lib/actions/user.actions"
 
 interface Props {
     currentUserId: string,

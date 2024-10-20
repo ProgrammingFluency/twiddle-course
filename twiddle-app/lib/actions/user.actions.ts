@@ -5,6 +5,7 @@ import User from "../models/user.model"
 import { connectToDB } from "../mongoose"
 import { FilterQuery, SortOrder } from "mongoose";
 import Tweet from "../models/tweet.model";
+import Group from "../models/group.model";
 
 interface CreateUserParams {
     userId: String;
@@ -186,5 +187,49 @@ export async function likeOrDislikeTweet(userId: string, tweetId: string, path: 
   
     } catch (error: any) {
       throw new Error(`Failed to like or dislike tweet: ${error.message}`);
+    }
+  }
+
+  export const fetchUserPosts = async (userId: string) => {
+    try {
+      connectToDB();
+  
+      // Find all tweets authored by the user with the given userId
+      const tweets = await User.findOne({ id: userId }).populate({
+        path: "tweets",
+        model: Tweet,
+        options:  { 
+          sort: { createdAt: 'desc' } 
+      
+      }, // Sort tweets in descending order by createdAt
+        populate: [
+          {
+            path: "group",
+            model: Group,
+            select: "name id image _id", // Select the "name" and "_id" fields from the "Group" model
+          },
+          {
+            path: 'retweetOf', // Populate the retweetOf field
+            populate: {
+              path: 'author',
+              model: User,
+              select: '_id name image',
+            },
+          },
+          {
+            path: "children",
+            model: Tweet,
+            populate: {
+              path: "author",
+              model: User,
+              select: "name image id", // Select the "name" and "_id" fields from the "User" model
+            },
+          },
+        ],
+      });
+      return tweets;
+    } catch (error) {
+      console.error("Error fetching user tweets:", error);
+      throw error;
     }
   }
