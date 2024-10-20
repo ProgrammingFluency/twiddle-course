@@ -253,3 +253,50 @@ export const createGroup = async (
       throw error;
     }
   }
+
+  export const fetchGroupPosts = async (id: string) => {
+    try {
+      connectToDB();
+  
+      const groupPosts = await Group.findById(id)
+    .populate({
+      path: "tweets",
+      model: Tweet,
+      options:  { 
+        sort: { createdAt: 'desc' } 
+    
+    }, // Sort tweets in descending order by createdAt
+      populate: [
+        {
+          path: "author",
+          model: User,
+          select: "name image id", // Select the "name" and "_id" fields from the "User" model
+        },
+        {
+          path: 'retweetOf', // Populate the retweetOf field
+          populate: {
+            path: 'author',
+            model: User,
+            select: '_id name image',
+          },
+        },
+        {
+          path: "children",
+          model: Tweet,
+          populate: {
+            path: "author",
+            model: User,
+            select: "image _id", // Select the "name" and "_id" fields from the "User" model
+          },
+        },
+      ],
+    });
+  
+  
+      return groupPosts;
+    } catch (error) {
+      // Handle any errors
+      console.error("Error fetching group posts:", error);
+      throw error;
+    }
+  }
