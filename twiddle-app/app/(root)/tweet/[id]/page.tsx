@@ -1,4 +1,5 @@
 import TweetCard from "@/components/cards/TweetCard"
+import Comment from "@/components/forms/Comment"
 import { fetchTweetById, isTweetByUser } from "@/lib/actions/tweet.actions"
 import { fetchUser } from "@/lib/actions/user.actions"
 import { currentUser } from "@clerk/nextjs/server"
