@@ -1,3 +1,4 @@
+import ProfileHeader from "@/components/shared/ProfileHeader"
 import { fetchUser } from "@/lib/actions/user.actions"
 import { currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
