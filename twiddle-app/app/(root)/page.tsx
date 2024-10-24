@@ -32,7 +32,7 @@ export default async function Home({
     <>
        <section className='mt-10 flex flex-col gap-10'>
         {result.posts.length === 0 ? (
-          <p className='no-result'>No tweets found</p>
+          <p className='text-light-1'>No tweets found</p>
         ) : (
           <div>
               {result.posts.map(async (tweet) => {
@@ -59,15 +59,16 @@ export default async function Home({
               )
               }
             )}
+            <Pagination
+              path='/'
+              pageNumber={searchParams?.page ? +searchParams.page : 1}
+              isNext={result.isNext}
+            />
           </div> 
         )}
       </section>
 
-      <Pagination
-        path='/'
-        pageNumber={searchParams?.page ? +searchParams.page : 1}
-        isNext={result.isNext}
-      />
+      
     </>
   )
 }
