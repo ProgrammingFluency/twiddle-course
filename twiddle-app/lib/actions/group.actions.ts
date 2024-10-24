@@ -40,11 +40,9 @@ export const createGroup = async (
         createdBy: user._id, 
       });
   
-      const createdGroup = await newGroup.save();
+      await newGroup.save();
   
-      // Update User model
-      user.groups.push(createdGroup._id);
-      await user.save();
+      
   
     } catch (error) {
       // Handle any errors
