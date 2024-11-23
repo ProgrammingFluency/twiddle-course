@@ -194,12 +194,7 @@ export const fetchTweets = async (pageNumber = 1, pageSize = 20) => {
         });
       }
   
-      // Remove tweet reference from the group if it belongs to a group
-      if (tweet.group) {
-        await Group.findByIdAndUpdate(tweet.group, {
-          $pull: { tweets: tweetId }
-        });
-      }
+      
   
       // Remove tweet reference from any group collections it might belong to
       await Group.updateMany(
@@ -221,12 +216,7 @@ export const fetchTweets = async (pageNumber = 1, pageSize = 20) => {
           $pull: { retweets: retweet._id }
         });
   
-        // Remove retweet reference from the group if it belongs to a group
-        if (retweet.group) {
-          await Group.findByIdAndUpdate(retweet.group, {
-            $pull: { tweets: retweet._id }
-          });
-        }
+        
   
         // Remove retweet reference from any group collections it might belong to
         await Group.updateMany(
