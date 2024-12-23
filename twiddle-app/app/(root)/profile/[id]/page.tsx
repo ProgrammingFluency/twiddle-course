@@ -31,7 +31,7 @@ const Page = async ( {params}: {params: {id: string}} ) => {
 
 
             <div className='mt-9'>
-                <Tabs defaultValue='Twiddle' className='w-full'>
+                <Tabs defaultValue='tweets' className='w-full'>
                     <TabsList className='tab'>
                         {profileTabs.map(tab => (
                             <TabsTrigger 
